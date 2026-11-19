@@ -24,9 +24,8 @@ Windows에서는 Docker Desktop의 WSL 2 백엔드를 사용한다. Linux의 Doc
 - [x] 커스텀 [Dockerfile](Dockerfile)과 웹 페이지의 [HTML](app/index.html) 및 [CSS](app/style.css) 작성.
 - [x] 이미지 빌드·실행 및 포트가 보이는 브라우저 접속 증거 수집. [브라우저 캡처](docs/browser-proof.png)
 - [x] 바인드 마운트의 수정 반영 및 이름 있는 볼륨의 데이터 영속성 검증. [Docker 실측 로그](docs/docker.md)
-- [x] Git 사용자 설정 존재 확인 및 과제 저장소에 기본 브랜치 설정. [Git 설정 로그](docs/environment.md#git-설정)
-- [x] GitHub CLI 계정 인증.
-- [ ] VS Code의 GitHub 계정 로그인 증거 수집.
+- [x] Git 사용자 이름과 비공개 이메일 설정 및 기본 브랜치 `main` 지정. [Git 설정 로그](docs/environment.md#git-설정)
+- [x] GitHub CLI와 VS Code GitHub 인증 및 공개 저장소 `main` 연동. [인증과 원격 연결 로그](docs/environment.md#github와-vs-code-연동)
 
 ## 터미널과 권한
 
@@ -73,7 +72,7 @@ KEEP_WEB=1 bash scripts/docker-lab.sh
 
 Git은 로컬에서 파일 변경의 이력을 커밋으로 관리한다. GitHub는 커밋을 원격에 공유하고 다른 사용자와 협업하는 서비스다. 이 과제 폴더의 기본 브랜치는 `main`이다. [마스킹한 설정 결과](docs/environment.md#git-설정)
 
-GitHub 인증 후 제출용 원격 저장소를 연결하고 `main`을 푸시한다. VS Code의 계정 메뉴에서 GitHub 로그인과 소스 제어의 원격 브랜치 연결을 확인한다. 공유할 캡처에서 계정 정보와 인증 화면은 제외한다.
+GitHub 인증 후 제출용 원격 저장소를 `origin`에 연결하고 `main`을 푸시했다. VS Code의 GitHub Authentication 로그에서 활성 세션을, Git에서 로컬 `main`이 `origin/main`을 추적하는 것을 확인했다. [인증과 원격 연결 로그](docs/environment.md#github와-vs-code-연동)
 
 ## 트러블슈팅
 

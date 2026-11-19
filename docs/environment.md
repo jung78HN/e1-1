@@ -104,3 +104,46 @@ main
 PS> gh --version
 gh version 2.105.0 (2026-11-17)
 ```
+
+## GitHub와 VS Code 연동
+
+GitHub CLI에서 기기 인증을 완료했다. 이 저장소에만 GitHub 사용자 이름과 GitHub에서 제공하는 `noreply` 형식의 이메일을 설정했다. 인증 로그의 계정 값은 마스킹했다.
+
+```text
+PS> gh auth status --hostname github.com
+  ✓ Logged in to github.com account <계정> (keyring)
+  - Active account: true
+  - Git operations protocol: https
+
+PS> git config --local --list
+init.defaultbranch=main
+user.name=<마스킹>
+user.email=<마스킹>
+remote.origin.url=https://github.com/jung78HN/e1-1.git
+branch.main.remote=origin
+branch.main.merge=refs/heads/main
+
+PS> git branch -vv
+* main a7a4081 [origin/main] Verify Docker workstation lab on Windows
+
+PS> git ls-remote origin refs/heads/main
+a7a408146e263b0187ee7711b6c93cf7258f7e88    refs/heads/main
+
+PS> git rev-parse HEAD
+a7a408146e263b0187ee7711b6c93cf7258f7e88
+```
+
+VS Code에서 `e1-1` 폴더를 열고 현재 창의 `GitHub Authentication.log`에서 세션 조회 결과를 확인했다. PowerShell에서 읽은 로그 중 인증 결과 두 줄을 발췌했다.
+
+```powershell
+$logs = Join-Path $env:APPDATA 'Code\logs'
+$latest = Get-ChildItem $logs -Directory | Sort-Object Name -Descending | Select-Object -First 1
+$authLog = Get-ChildItem $latest.FullName -Filter 'GitHub Authentication.log' -File -Recurse |
+    Sort-Object LastWriteTime -Descending | Select-Object -First 1
+Get-Content -LiteralPath $authLog.FullName -Tail 25
+```
+
+```text
+2026-11-19 16:56:13.363 [info] Getting sessions for all scopes...
+2026-11-19 16:56:13.363 [info] Got 1 sessions for all scopes...
+```
