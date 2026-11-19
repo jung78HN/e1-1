@@ -68,6 +68,17 @@ Test-Path -LiteralPath 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Componen
 # True
 ```
 
+Windows 재시작 이후 `docker info`에서 Linux 엔진의 응답을 확인했다.
+
+```text
+PS> wsl.exe --status
+기본 배포: docker-desktop
+기본 버전: 2
+
+PS> & $docker info --format 'Server={{.ServerVersion}} OS={{.OSType}}'
+Server=29.9.3 OS=linux
+```
+
 - [Microsoft WSL 설치 문서](https://learn.microsoft.com/windows/wsl/install)
 - [Docker Desktop Windows 설치 문서](https://docs.docker.com/desktop/setup/install/windows-install/)
 

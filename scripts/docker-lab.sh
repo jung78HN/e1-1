@@ -24,12 +24,12 @@ cleanup() {
 wait_for_http() {
   local url=$1
   for attempt in {1..30}; do
-    if curl -fsS --max-time 2 "$url" -o "$scratch/response.txt" 2>/dev/null; then
+    if curl -fsS --max-time 2 "$url" > "$scratch/response.txt" 2>/dev/null; then
       return 0
     fi
     sleep 1
   done
-  curl -fsS --max-time 2 "$url" -o "$scratch/response.txt"
+  curl -fsS --max-time 2 "$url" > "$scratch/response.txt"
 }
 
 # Git Bash otherwise rewrites paths inside Linux containers.

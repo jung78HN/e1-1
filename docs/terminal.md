@@ -41,3 +41,24 @@ drwxr-xr-x 1 <사용자> <그룹>  0 Nov 19 16:14 ..
 + [[ MINGW64_NT-10.0-26200 == Linux ]]
 + rm -rf -- /tmp/<실습폴더>
 ```
+
+## Linux 파일과 디렉터리 권한
+
+Ubuntu 컨테이너 안의 Linux 파일 시스템에서 `chmod`를 실행했다. 출력에서 권한 변경 구간을 발췌했다.
+
+```text
+$ MSYS_NO_PATHCONV=1 docker run --rm -i ubuntu:24.04 bash -s < scripts/terminal-lab.sh
++ mkdir permissions
++ touch permissions/example.txt
++ chmod 600 permissions/example.txt
++ chmod 700 permissions
++ stat -c '%a %A %n' permissions permissions/example.txt
+700 drwx------ permissions
+600 -rw------- permissions/example.txt
++ chmod 644 permissions/example.txt
++ chmod 755 permissions
++ stat -c '%a %A %n' permissions permissions/example.txt
+755 drwxr-xr-x permissions
+644 -rw-r--r-- permissions/example.txt
++ rm -rf -- /tmp/<실습폴더>
+```

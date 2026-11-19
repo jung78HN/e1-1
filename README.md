@@ -9,7 +9,7 @@
 | OS | Windows 11 25H2, 빌드 26200.9974 |
 | 셸과 터미널 | Git Bash 5.3.15 및 Windows PowerShell |
 | WSL | 3.0.5.0, 기본 버전 2 |
-| Docker | Docker Desktop 사용자 범위 설치, CLI 29.9.3, 엔진 시작 대기 |
+| Docker | Docker Desktop 사용자 범위 설치, CLI·Linux 엔진 29.9.3 |
 | Git | 2.56.0.windows.4, 과제 저장소 기본 브랜치 `main` |
 | VS Code와 GitHub CLI | VS Code 1.145.3, GitHub CLI 2.105.0 |
 
@@ -18,14 +18,15 @@ Windows에서는 Docker Desktop의 WSL 2 백엔드를 사용한다. Linux의 Doc
 ## 수행 체크리스트
 
 - [x] 터미널에서 경로 확인, 탐색, 파일 생성·복사·이름 변경·삭제 및 내용 확인. [터미널 실측 로그](docs/terminal.md)
-- [ ] Linux 파일과 디렉터리의 POSIX 권한 변경 전후 검증. [터미널 실습 절차](#터미널과-권한)
+- [x] Linux 파일과 디렉터리의 POSIX 권한 변경 전후 검증. [권한 실측 로그](docs/terminal.md#linux-파일과-디렉터리-권한)
 - [x] WSL·Docker Desktop 설치 및 Docker CLI 버전 확인. [설치 및 점검 로그](docs/environment.md)
-- [ ] 엔진 점검과 `hello-world`, Ubuntu 실행·중지, 이미지·컨테이너 목록, 로그·리소스 조회. [Docker 실습 절차](#docker-실습)
+- [x] 엔진 점검과 `hello-world`, Ubuntu 실행·중지, 이미지·컨테이너 목록, 로그·리소스 조회. [Docker 실측 로그](docs/docker.md)
 - [x] 커스텀 [Dockerfile](Dockerfile)과 웹 페이지의 [HTML](app/index.html) 및 [CSS](app/style.css) 작성.
-- [ ] 이미지 빌드·실행 및 포트가 보이는 브라우저 접속 증거 수집. [Docker 실습 절차](#docker-실습)
-- [ ] 바인드 마운트의 수정 반영 및 이름 있는 볼륨의 데이터 영속성 검증. [Docker 실습 절차](#docker-실습)
+- [x] 이미지 빌드·실행 및 포트가 보이는 브라우저 접속 증거 수집. [브라우저 캡처](docs/browser-proof.png)
+- [x] 바인드 마운트의 수정 반영 및 이름 있는 볼륨의 데이터 영속성 검증. [Docker 실측 로그](docs/docker.md)
 - [x] Git 사용자 설정 존재 확인 및 과제 저장소에 기본 브랜치 설정. [Git 설정 로그](docs/environment.md#git-설정)
-- [ ] GitHub 인증, VS Code 연동 증거 수집 및 GitHub 저장소 제출.
+- [x] GitHub CLI 계정 인증.
+- [ ] VS Code의 GitHub 계정 로그인 증거 수집.
 
 ## 터미널과 권한
 
@@ -54,7 +55,7 @@ set -o pipefail
 KEEP_WEB=1 bash scripts/docker-lab.sh
 ```
 
-[Docker 검증 스크립트](scripts/docker-lab.sh)는 다음 명령과 결과를 차례로 터미널에 출력한다.
+[Docker 검증 스크립트](scripts/docker-lab.sh)는 다음 명령과 결과를 차례로 터미널에 출력한다. [실행 로그와 두 번째 포트의 브라우저 캡처](docs/docker.md)
 
 | 검증 | 확인할 값 |
 | --- | --- |
@@ -77,4 +78,5 @@ GitHub 인증 후 제출용 원격 저장소를 연결하고 `main`을 푸시한
 ## 트러블슈팅
 
 1. **Docker CLI 설치 전 `docker`를 찾을 수 없었다.** Docker Desktop 미설치 가능성을 확인하기 위해 `where.exe docker`를 실행했다. 실행 파일이 검색되지 않아 공식 설치 파일의 서명을 검사하고 사용자 범위 설치를 진행했다. 설치 후 CLI 버전이 출력되었다. [설치 로그](docs/environment.md)
-2. **첫 Docker Desktop 설치에서 가상 머신 플랫폼이 필요하다는 오류가 발생했다.** `install-log.txt`에서 `VirtualMachinePlatform` 선행 조건을 확인했고, 일반 셸에서 실행한 DISM은 오류 740을 반환했다. 관리자 모드로 WSL 설치를 실행한 후 Docker Desktop을 다시 설치했다. WSL은 설치되었으나 상태 점검에서 WSL 2 가상화가 아직 준비되지 않았고 엔진 시작은 시간 초과되었다. Windows 재시작 후 WSL 상태를 다시 확인해야 한다. [실측 로그](docs/environment.md)
+2. **첫 Docker Desktop 설치에서 가상 머신 플랫폼이 필요하다는 오류가 발생했다.** `install-log.txt`에서 `VirtualMachinePlatform` 선행 조건을 확인했고, 일반 셸에서 실행한 DISM은 오류 740을 반환했다. 관리자 모드로 WSL을 설치하고 Docker Desktop을 다시 설치했다. Windows 재시작 후 `docker info`에서 Linux 엔진이 정상 응답했다. [실측 로그](docs/environment.md)
+3. **Git Bash에서 `curl`이 응답 파일을 쓰지 못했다.** `http://127.0.0.1:8080/` 요청에서 `curl` 오류 23과 응답 바이트 수를 확인했다. Docker 인자의 자동 변환을 막은 상태에서 `curl -o`에 넘긴 POSIX 임시 경로가 문제였다. Git Bash가 자체적으로 출력 파일을 열도록 출력 리디렉션을 사용했고, 재실행에서 `200 OK`와 HTML을 확인했다. [Docker 실측 로그](docs/docker.md)
