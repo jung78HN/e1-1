@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>개발 워크스테이션 실습</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>개발 워크스테이션 실습</h1>
+    <p>커스텀 NGINX 이미지의 정적 페이지입니다.</p>
+    <p>현재 접속 주소 <code id="endpoint"></code></p>
+    <script>
+      document.getElementById('endpoint').textContent = window.location.origin;
+    </script>
+  </main>
+</body>
+</html>

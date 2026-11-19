@@ -1,0 +1,20 @@
+:root {
+  font-family: system-ui, sans-serif;
+  color: #edf7ff;
+  background: #101f32;
+  color-scheme: dark;
+}
+
+body { margin: 0; }
+
+main {
+  max-width: 42rem;
+  margin: 12vh auto;
+  padding: clamp(1.5rem, 5vw, 3rem);
+  border-top: 4px solid #7ce0c3;
+  background: #192d44;
+}
+
+h1 { margin-top: 0; }
+p { line-height: 1.6; }
+code { color: #7ce0c3; overflow-wrap: anywhere; }
