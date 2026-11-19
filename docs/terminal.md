@@ -44,19 +44,27 @@ drwxr-xr-x 1 <사용자> <그룹>  0 Nov 19 16:14 ..
 
 ## Linux 파일과 디렉터리 권한
 
-Ubuntu 컨테이너 안의 Linux 파일 시스템에서 `chmod`를 실행했다. 출력에서 권한 변경 구간을 발췌했다.
+Ubuntu 컨테이너에서 `ls -l`로 파일 권한을, `ls -ld`로 디렉터리 자체의 권한을 확인했다. `stat`의 8진수 모드와 함께 비교했다. 세션의 시작·종료 시각은 호스트 시간(`+09:00`)이고, `ls`에 표시된 파일 시각은 컨테이너의 UTC 기준이다. [전체 세션과 타임스탬프](terminal-session.txt)
 
 ```text
-$ MSYS_NO_PATHCONV=1 docker run --rm -i ubuntu:24.04 bash -s < scripts/terminal-lab.sh
+$ MSYS_NO_PATHCONV=1 docker run --rm -e TZ=Asia/Seoul -i ubuntu:24.04 bash -s < scripts/terminal-lab.sh
 + mkdir permissions
 + touch permissions/example.txt
 + chmod 600 permissions/example.txt
 + chmod 700 permissions
++ ls -l -- permissions/example.txt
+-rw------- 1 root root 0 Nov 19 08:06 permissions/example.txt
++ ls -ld -- permissions
+drwx------ 2 root root 4096 Nov 19 08:06 permissions
 + stat -c '%a %A %n' permissions permissions/example.txt
 700 drwx------ permissions
 600 -rw------- permissions/example.txt
 + chmod 644 permissions/example.txt
 + chmod 755 permissions
++ ls -l -- permissions/example.txt
+-rw-r--r-- 1 root root 0 Nov 19 08:06 permissions/example.txt
++ ls -ld -- permissions
+drwxr-xr-x 2 root root 4096 Nov 19 08:06 permissions
 + stat -c '%a %A %n' permissions permissions/example.txt
 755 drwxr-xr-x permissions
 644 -rw-r--r-- permissions/example.txt

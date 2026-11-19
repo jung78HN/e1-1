@@ -1,0 +1,60 @@
+Session start: 2026-11-19T17:06:51.3536263+09:00
+$ MSYS_NO_PATHCONV=1 docker run --rm -e TZ=Asia/Seoul -i ubuntu:24.04 bash -s < scripts/terminal-lab.sh
++ uname -s
+Linux
++ cd /tmp/<실습폴더>
++ pwd
++ mkdir work
+/tmp/<실습폴더>
++ cd work
++ touch .hidden empty.txt
++ printf '%s\n' 'Developer workstation lab'
++ ls -la
+total 12
+drwxr-xr-x 2 root root 4096 Nov 19 08:06 .
+drwx------ 3 root root 4096 Nov 19 08:06 ..
+-rw-r--r-- 1 root root    0 Nov 19 08:06 .hidden
+-rw-r--r-- 1 root root    0 Nov 19 08:06 empty.txt
+-rw-r--r-- 1 root root   26 Nov 19 08:06 notes.txt
++ cat notes.txt
+Developer workstation lab
++ wc -c empty.txt
+0 empty.txt
++ cp notes.txt copy.txt
++ mv copy.txt renamed.txt
++ ls -l renamed.txt
+-rw-r--r-- 1 root root 26 Nov 19 08:06 renamed.txt
++ rm renamed.txt
++ test '!' -e renamed.txt
++ ls -la
+total 12
+drwxr-xr-x 2 root root 4096 Nov 19 08:06 .
+drwx------ 3 root root 4096 Nov 19 08:06 ..
+-rw-r--r-- 1 root root    0 Nov 19 08:06 .hidden
+-rw-r--r-- 1 root root    0 Nov 19 08:06 empty.txt
+-rw-r--r-- 1 root root   26 Nov 19 08:06 notes.txt
+++ uname -s
++ [[ Linux == Linux ]]
++ mkdir permissions
++ touch permissions/example.txt
++ chmod 600 permissions/example.txt
++ chmod 700 permissions
++ ls -l -- permissions/example.txt
+-rw------- 1 root root 0 Nov 19 08:06 permissions/example.txt
++ ls -ld -- permissions
+drwx------ 2 root root 4096 Nov 19 08:06 permissions
++ stat -c '%a %A %n' permissions permissions/example.txt
+700 drwx------ permissions
+600 -rw------- permissions/example.txt
++ chmod 644 permissions/example.txt
++ chmod 755 permissions
++ ls -l -- permissions/example.txt
+-rw-r--r-- 1 root root 0 Nov 19 08:06 permissions/example.txt
++ ls -ld -- permissions
+drwxr-xr-x 2 root root 4096 Nov 19 08:06 permissions
++ stat -c '%a %A %n' permissions permissions/example.txt
+755 drwxr-xr-x permissions
+644 -rw-r--r-- permissions/example.txt
++ rm -rf -- /tmp/<실습폴더>
+Session end: 2026-11-19T17:06:56.2819729+09:00
+Exit status: 0

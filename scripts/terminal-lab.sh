@@ -28,8 +28,12 @@ if [[ $(uname -s) == Linux ]]; then
   touch permissions/example.txt
   chmod 600 permissions/example.txt
   chmod 700 permissions
+  ls -l -- permissions/example.txt
+  ls -ld -- permissions
   stat -c '%a %A %n' permissions permissions/example.txt
   chmod 644 permissions/example.txt
   chmod 755 permissions
+  ls -l -- permissions/example.txt
+  ls -ld -- permissions
   stat -c '%a %A %n' permissions permissions/example.txt
 fi

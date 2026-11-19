@@ -225,3 +225,60 @@ HTTP 200
 ```
 
 ![Edge 주소창에 127.0.0.1:18080과 NGINX 응답이 표시되는 화면](browser-proof.png)
+
+## Git Bash의 curl 출력 경로 오류
+
+첫 실행에서 실제로 반환된 오류를 발췌했다. 임시 디렉터리명은 마스킹했다.
+
+```text
++ curl -fsS --max-time 2 http://127.0.0.1:8080/ -o /tmp/<실습폴더>/response.txt
+curl: (23) client returned ERROR on write of 559 bytes
+```
+
+`-o`에 경로를 넘기는 대신 Git Bash가 `>`로 출력 파일을 열도록 스크립트를 수정했다. 수정 후 전체 실습 로그에 `HTTP/1.1 200 OK`와 본문이 기록됐다.
+
+## 엔진 요약과 hello-world 종료 코드
+
+보완 검증에서 Docker Desktop Linux 엔진의 커널, 스토리지 드라이버와 cgroup 버전을 추가로 조회했다. `hello-world`를 다시 실행한 직후 종료 코드를 확인했다.
+
+```text
+PS> docker info --format 'Server={{.ServerVersion}} OSTYPE={{.OSType}} Arch={{.Architecture}} Kernel={{.KernelVersion}} Storage={{.Driver}} Cgroup={{.CgroupVersion}}'
+Server=29.9.3 OSTYPE=linux Arch=x86_64 Kernel=6.18.58.1-microsoft-standard-WSL2 Storage=overlayfs Cgroup=2
+
+PS> docker run --rm hello-world
+Hello from Docker!
+…
+PS> $rc = $LASTEXITCODE
+PS> "hello-world exit: $rc"
+hello-world exit: 0
+```
+
+## 호스트 포트 충돌 재현과 복구
+
+보완 검증에서는 임시 포트 `61639`를 두 컨테이너에 명시적으로 지정했다. 충돌 메시지 중 원인을 보여 주는 부분을 발췌했다.
+
+```text
+PS> docker run --rm -d --name e11-port-review-ae4c9266-owner -p 127.0.0.1:61639:80 e11-workstation:1.0
+f1b85dd44438ca73ab09ad04c46de1bbaf77b0e907ca2f5e7b750e30d848aad4
+
+PS> docker ps --format '{{.Names}} {{.Ports}}' | Select-String -SimpleMatch ':61639->'
+e11-port-review-ae4c9266-owner 127.0.0.1:61639->80/tcp
+
+PS> netstat.exe -ano -p tcp | Select-String '127\.0\.0\.1:61639\s+.*LISTENING'
+TCP    127.0.0.1:61639        0.0.0.0:0              LISTENING       19260
+PS> Get-Process -Id 19260 | Select-Object -ExpandProperty ProcessName
+com.docker.backend
+
+PS> docker run --rm -d --name e11-port-review-ae4c9266-probe -p 127.0.0.1:61639:80 e11-workstation:1.0
+… Bind for 127.0.0.1:61639 failed: port is already allocated
+PS> $rc = $LASTEXITCODE
+PS> "Conflict exit: $rc"
+Conflict exit: 125
+
+PS> docker stop e11-port-review-ae4c9266-owner
+e11-port-review-ae4c9266-owner
+PS> docker run --rm -d --name e11-port-review-ae4c9266-probe -p 127.0.0.1:61639:80 e11-workstation:1.0
+3e2d01ab81d0670777845b3f5a6ca6ac8d96e37e1cb99a4cd82b8538de465b83
+PS> curl.exe -fsS --retry 4 --retry-delay 1 --retry-connrefused --output NUL --write-out 'HTTP %{http_code}\n' http://127.0.0.1:61639/
+HTTP 200
+```
